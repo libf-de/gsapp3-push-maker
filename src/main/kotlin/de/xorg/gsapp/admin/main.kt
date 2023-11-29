@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.example.compose.AppTheme
+import de.xorg.gsapp.admin.ui.theme.AppTheme
 import de.xorg.gsapp.admin.data.repository.AppRepository
 import de.xorg.gsapp.admin.data.sources.FirebaseSource
 import de.xorg.gsapp.admin.data.sources.GsWebsiteDataSource
@@ -43,30 +43,20 @@ import org.kodein.di.compose.withDI
 import org.kodein.di.instance
 import org.kodein.di.singleton
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun App() = withDI({
-    bind<GsWebsiteDataSource>() with singleton { GsWebsiteDataSource(di) }
+    bind<GsWebsiteDataSource>() with singleton { GsWebsiteDataSource() }
     bind<AppRepository>() with singleton { AppRepository(di) }
-    bind<FirebaseSource>() with singleton { FirebaseSource(di) }
+    bind<FirebaseSource>() with singleton { FirebaseSource() }
     bind<AppViewModel>() with singleton { AppViewModel(di) }
 }) {
     val viewModel: AppViewModel by localDI().instance()
 
     println(System.getProperty("user.dir"))
 
-    var text by remember { mutableStateOf("Hello, World!") }
-
     AppTheme {
-        Scaffold(
-            /*topBar = {
-                TopAppBar(
-                    title = { Text("GSApp Push Maker") },
-                    modifier = Modifier
-                )
-            }*/
-        ) { padVal ->
+        Scaffold { padVal ->
             Column(
                 modifier = Modifier.padding(padVal).padding(18.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -111,10 +101,7 @@ fun App() = withDI({
                             Text(text = "Klassen", style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.width(72.dp).alignByBaseline())
                             OutlinedTextField(value = viewModel.classesStr,
-                                onValueChange = {
-                                    viewModel.classesStr = it.replace(" ", "　")
-                                        /*.replace(Regex("(?:[a-zA-Z0-9])　?;(?:[a-zA-Z0-9])|(?:[a-zA-Z0-9]);　(?:[a-zA-Z0-9])"), "　;　")*/
-                                                },
+                                onValueChange = { viewModel.classesStr = it.replace(" ", "　") },
                                 modifier = Modifier.fillMaxWidth().height(96.dp).alignByBaseline()
                             )
                         }

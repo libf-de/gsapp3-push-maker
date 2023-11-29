@@ -1,4 +1,4 @@
-package com.example.compose
+package de.xorg.gsapp.admin.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF725C00)
