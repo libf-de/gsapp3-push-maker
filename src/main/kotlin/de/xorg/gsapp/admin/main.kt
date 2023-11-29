@@ -11,27 +11,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import de.xorg.gsapp.admin.ui.theme.AppTheme
 import de.xorg.gsapp.admin.data.repository.AppRepository
 import de.xorg.gsapp.admin.data.sources.FirebaseSource
@@ -45,15 +39,13 @@ import org.kodein.di.singleton
 
 @Composable
 @Preview
-fun App() = withDI({
+fun AppContents() = withDI({
     bind<GsWebsiteDataSource>() with singleton { GsWebsiteDataSource() }
     bind<AppRepository>() with singleton { AppRepository(di) }
     bind<FirebaseSource>() with singleton { FirebaseSource() }
     bind<AppViewModel>() with singleton { AppViewModel(di) }
 }) {
     val viewModel: AppViewModel by localDI().instance()
-
-    println(System.getProperty("user.dir"))
 
     AppTheme {
         Scaffold { padVal ->
@@ -160,7 +152,9 @@ fun App() = withDI({
 fun main() = application {
     Window(onCloseRequest = ::exitApplication,
            title = "GSApp Push Maker",
-           icon = rememberVectorPainter(Icons.Default.Notifications)) {
-        App()
+           state = rememberWindowState(height = 800.dp),
+           icon = painterResource("icon.svg")
+    ) {
+        AppContents()
     }
 }
