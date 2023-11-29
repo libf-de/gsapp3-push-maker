@@ -1,8 +1,12 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import java.util.*
+
+val appName = "GSApp Push Maker"
+val appVersion = "1.0.0"
 
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.jetbrainsCompose)
 }
 
 repositories {
@@ -12,34 +16,31 @@ repositories {
 }
 
 dependencies {
-    var ktorVersion = "2.3.4"
-    val precomposeVersion = "1.5.1"
-
-    // Note, if you develop a library, you should use compose.desktop.common.
-    // compose.desktop.currentOs should be used in launcher-sourceSet
-    // (in a separate module for demo project and in testMain).
-    // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     implementation(compose.material3)
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("it.skrape:skrapeit:1.2.2")
-    implementation("org.kodein.di:kodein-di-framework-compose:7.19.0")
-    implementation("com.google.firebase:firebase-admin:9.2.0")
-
-    api("moe.tlaster:precompose-viewmodel:$precomposeVersion")
-    // Include the Test API
-    testImplementation(compose.desktop.uiTestJUnit4)
+    implementation(libs.firebase.admin)
+    implementation(libs.kodein.compose)
+    implementation(libs.ktor)
+    implementation(libs.ktor.cio)
+    implementation(libs.skrapeit)
+    api(libs.precompose.viewModel)
 }
 
 compose.desktop {
     application {
         mainClass = "de.xorg.gsapp.admin.MainKt"
 
+        buildTypes.release.proguard {
+            version = "7.4.1"
+            configurationFiles.from(project.file("proguard-rules.pro"))
+        }
+
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "GSApp Push Maker"
-            packageVersion = "1.0.0"
+            modules("java.naming")
+
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
+            packageName = appName
+            packageVersion = appVersion
 
             macOS {
                 iconFile.set(project.file("icon/icon_normal.icns"))
@@ -51,5 +52,41 @@ compose.desktop {
                 iconFile.set(project.file("icon/icon_normal.png"))
             }
         }
+    }
+}
+
+tasks {
+    withType<org.gradle.jvm.tasks.Jar> {
+        exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
+    }
+}
+
+val innoSetup by tasks.registering(Exec::class) {
+    // Überprüfen, ob das Betriebssystem Windows ist
+    onlyIf {
+        System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows")
+    }
+
+    // Compile application to binary first
+    dependsOn("createReleaseDistributable")
+
+    workingDir = projectDir
+
+    // Write version to InnoSetup-Script
+    val verFile = File("setup/version.iss")
+    verFile.writeText("#define GSAppVersion \"${appVersion}\"")
+
+    // Pfad zum Inno Setup Compiler ISCC.exe
+    val isccPath = "C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe"
+
+    // Pfad zur Inno Setup-Skriptdatei
+
+    val scriptPath = File(projectDir, "setup/setup.iss").absolutePath
+
+    // Befehlszeile konfigurieren
+    commandLine(isccPath, scriptPath)
+
+    doFirst {
+        println("Executing InnoSetup compiler: $commandLine")
     }
 }

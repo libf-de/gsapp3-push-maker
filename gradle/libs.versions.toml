@@ -1,0 +1,22 @@
+[versions]
+compose-plugin = "1.5.10"
+firebase-admin = "9.2.0"
+kodein = "7.19.0"
+kotlin = "1.9.20"
+ktor = "2.3.4"
+skrapeit = "1.3.0-alpha.1"
+precompose = "1.5.1"
+
+
+[libraries]
+firebase-admin = { module = "com.google.firebase:firebase-admin", version.ref="firebase-admin" }
+kodein-compose = { module = "org.kodein.di:kodein-di-framework-compose", version.ref = "kodein" }
+ktor = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+skrapeit = { module = "it.skrape:skrapeit", version.ref = "skrapeit" }
+precompose-viewModel = { module = "moe.tlaster:precompose-viewmodel", version.ref = "precompose" }
+
+
+[plugins]
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
