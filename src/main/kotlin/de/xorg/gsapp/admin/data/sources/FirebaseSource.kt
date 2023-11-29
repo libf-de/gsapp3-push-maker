@@ -11,9 +11,9 @@ import java.io.FileInputStream
 
 
 
-class FirebaseSource(di: DI) {
+class FirebaseSource {
     init {
-        val serviceAccount = FileInputStream("gsapp3-mp-firebase-adminsdk-rkocu-fbe836aaac.json")
+        val serviceAccount = FileInputStream("auth.json")
 
         val options: FirebaseOptions = FirebaseOptions.builder()
             .setCredentials(GoogleCredentials.fromStream(serviceAccount))

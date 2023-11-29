@@ -24,10 +24,8 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
-import org.kodein.di.DI
 
-
-class GsWebsiteDataSource(di: DI) {
+class GsWebsiteDataSource {
     private val parser = GsWebsiteParser()
     private val client = HttpClient()
 
