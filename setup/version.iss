@@ -1,0 +1,1 @@
+#define GSAppVersion "1.0.0"
