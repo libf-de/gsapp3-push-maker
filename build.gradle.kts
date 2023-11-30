@@ -31,6 +31,7 @@ compose.desktop {
         mainClass = "de.xorg.gsapp.admin.MainKt"
 
         buildTypes.release.proguard {
+            isEnabled = false
             version = "7.4.1"
             configurationFiles.from(project.file("proguard-rules.pro"))
         }
